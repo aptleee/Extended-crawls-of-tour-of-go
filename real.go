@@ -93,8 +93,7 @@ func main() {
 	}
 }
 
-// fakeFetcher is Fetcher that returns canned results.
-type fakeFetcher int
+type myFetcher int
 
 func (f fakeFetcher) Fetch(url string) (string, []string, error) {
 	resp, err := http.Get(url)
@@ -110,4 +109,4 @@ func (f fakeFetcher) Fetch(url string) (string, []string, error) {
 }
 
 // fetcher is a populated fakeFetcher.
-var fetcher = fakeFetcher(1)
+var fetcher = myFetcher(1)
