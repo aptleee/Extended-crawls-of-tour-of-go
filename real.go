@@ -94,7 +94,7 @@ func main() {
 
 type myFetcher int
 
-func (f fakeFetcher) Fetch(url string) (string, []string, error) {
+func (f myFetcher) Fetch(url string) (string, []string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", nil, fmt.Errorf("not found: %s", url)
