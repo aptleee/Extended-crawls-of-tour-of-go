@@ -72,6 +72,24 @@ func Crawl(url string, depth int, fetcher Fetcher) {
 	fmt.Printf("<- Done with %v\n", url)
 }
 
+
+type myFetcher int
+
+func (f myFetcher) Fetch(url string) (string, []string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", nil, fmt.Errorf("not found: %s", url)
+	}
+	defer resp.Body.Close()
+	// body, _ := ioutil.ReadAll(resp.Body)
+	urls := collectlinks.All(resp.Body)
+
+	// fmt.Println("urls", urls)
+	return "", urls, nil
+}
+
+var fetcher = myFetcher(1)
+
 func main() {
 	flag.Parse()
 	args := flag.Args()
@@ -91,20 +109,3 @@ func main() {
 		}
 	}
 }
-
-type myFetcher int
-
-func (f myFetcher) Fetch(url string) (string, []string, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", nil, fmt.Errorf("not found: %s", url)
-	}
-	defer resp.Body.Close()
-	// body, _ := ioutil.ReadAll(resp.Body)
-	urls := collectlinks.All(resp.Body)
-
-	// fmt.Println("urls", urls)
-	return "", urls, nil
-}
-
-var fetcher = myFetcher(1)
