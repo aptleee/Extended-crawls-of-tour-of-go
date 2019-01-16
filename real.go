@@ -19,7 +19,6 @@ type Fetcher interface {
 
 // fetched tracks URLs that have been (or are being) fetched.
 // The lock must be held while reading from or writing to the map.
-// See https://golang.org/ref/spec#Struct_types section on embedded types.
 var fetched = struct {
 	m   map[string]error
 	mux sync.Mutex
@@ -41,11 +40,11 @@ func Crawl(url string, depth int, fetcher Fetcher) {
 		fmt.Printf("<- Done with %v, already fetched.\n", url)
 		return
 	}
-	// We mark the url to be loading to avoid others reloading it at the same time.
+	// mark the url to be loading to avoid others reloading it at the same time.
 	fetched.m[url] = loading
 	fetched.mux.Unlock()
 
-	// We load it concurrently.
+	// load it concurrently.
 	body, urls, err := fetcher.Fetch(url)
 
 	// And update the status in a synced zone.
@@ -108,5 +107,4 @@ func (f fakeFetcher) Fetch(url string) (string, []string, error) {
 	return "", urls, nil
 }
 
-// fetcher is a populated fakeFetcher.
 var fetcher = myFetcher(1)
